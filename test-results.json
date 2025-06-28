@@ -1,0 +1,315 @@
+{
+  "analysis": {
+    "id": "test-jewelry-001",
+    "processing": {
+      "timestamp": "2025-06-28T13:02:01.340Z",
+      "totalTime": 45000,
+      "gpuTime": 12000,
+      "modelVersions": {
+        "yolo": "yolov8n-jewelry-v1.2",
+        "clip": "clip-vit-large-patch14",
+        "sam": "sam-vit-huge",
+        "langchain": "gpt-4-vision-preview",
+        "crewai": "jewelry-expert-v2.1"
+      },
+      "resourceUsage": {
+        "modalCredits": 0.45,
+        "jinaTokens": 1250,
+        "weaviateQueries": 8
+      },
+      "flags": []
+    },
+    "yolo": {
+      "detectedObjects": [
+        {
+          "class": "necklace",
+          "confidence": 0.96,
+          "bbox": [
+            120,
+            80,
+            480,
+            520
+          ],
+          "subObjects": [
+            {
+              "class": "chain",
+              "confidence": 0.94,
+              "bbox": [
+                140,
+                100,
+                460,
+                200
+              ]
+            },
+            {
+              "class": "pendant",
+              "confidence": 0.92,
+              "bbox": [
+                280,
+                200,
+                380,
+                320
+              ]
+            },
+            {
+              "class": "chain",
+              "confidence": 0.89,
+              "bbox": [
+                160,
+                320,
+                440,
+                480
+              ]
+            }
+          ]
+        }
+      ],
+      "primaryObject": {
+        "category": "necklace",
+        "confidence": 0.96,
+        "centerPoint": [
+          300,
+          300
+        ],
+        "dimensions": {
+          "width": 360,
+          "height": 440
+        }
+      }
+    },
+    "clip": {
+      "visualConcepts": [
+        {
+          "concept": "gold tone jewelry",
+          "confidence": 0.94
+        },
+        {
+          "concept": "layered necklace set",
+          "confidence": 0.91
+        },
+        {
+          "concept": "octagonal pendant",
+          "confidence": 0.88
+        },
+        {
+          "concept": "curb chain",
+          "confidence": 0.86
+        },
+        {
+          "concept": "rope chain",
+          "confidence": 0.84
+        },
+        {
+          "concept": "vintage style",
+          "confidence": 0.82
+        },
+        {
+          "concept": "costume jewelry",
+          "confidence": 0.79
+        },
+        {
+          "concept": "fashion jewelry",
+          "confidence": 0.77
+        }
+      ],
+      "styleAnalysis": {
+        "era": "contemporary",
+        "aesthetic": "vintage-inspired",
+        "formality": "casual-dressy",
+        "target": "fashion-forward"
+      }
+    },
+    "sam": {
+      "segments": [
+        {
+          "id": "main_necklace",
+          "area": 45600,
+          "bbox": [
+            120,
+            80,
+            480,
+            520
+          ],
+          "mask": "base64_encoded_mask_data",
+          "confidence": 0.93
+        },
+        {
+          "id": "pendant",
+          "area": 8400,
+          "bbox": [
+            280,
+            200,
+            380,
+            320
+          ],
+          "mask": "base64_encoded_mask_data",
+          "confidence": 0.91
+        }
+      ],
+      "backgroundRemoved": true,
+      "primaryObject": {
+        "cleanMask": true,
+        "edgeQuality": 0.89
+      }
+    },
+    "integrated": {
+      "category": "necklace",
+      "subcategory": "layered-set",
+      "title": "Vintage-Style Gold Tone Layered Necklace Set with Octagonal Pendant",
+      "materials": [
+        {
+          "material": "gold-tone-metal",
+          "confidence": 0.87,
+          "purity": "plated",
+          "notes": "Base metal with gold-tone plating"
+        }
+      ],
+      "gemstones": [],
+      "style": {
+        "era": "contemporary",
+        "design": "layered-chain-set",
+        "aesthetic": "vintage-inspired",
+        "motifs": [
+          "geometric",
+          "octagonal"
+        ]
+      },
+      "condition": {
+        "overall": "excellent",
+        "score": 92,
+        "details": [
+          "minimal wear",
+          "good plating condition",
+          "functional clasps"
+        ]
+      },
+      "authenticity": {
+        "verified": true,
+        "confidence": 0.85,
+        "indicators": [
+          "consistent plating",
+          "quality construction",
+          "proper chain links"
+        ]
+      },
+      "brand": {
+        "detected": false,
+        "confidence": 0,
+        "name": null
+      },
+      "marketAnalysis": {
+        "category": "fashion-jewelry",
+        "demandLevel": "medium",
+        "competitorCount": 24,
+        "priceHistory": [
+          {
+            "source": "ebay",
+            "price": 25.99,
+            "date": "2024-12-20",
+            "condition": "new"
+          },
+          {
+            "source": "etsy",
+            "price": 32.5,
+            "date": "2024-12-18",
+            "condition": "vintage"
+          },
+          {
+            "source": "mercari",
+            "price": 18.75,
+            "date": "2024-12-15",
+            "condition": "used"
+          }
+        ]
+      },
+      "price": {
+        "recommended": 28.99,
+        "range": {
+          "min": 22.99,
+          "max": 35.99
+        },
+        "confidence": 0.82,
+        "factors": [
+          "condition",
+          "style",
+          "market-demand"
+        ]
+      },
+      "qualityMetrics": {
+        "imageQuality": 0.91,
+        "aiConfidence": 0.88,
+        "overallScore": 89
+      }
+    }
+  },
+  "listing": {
+    "title": "Vintage-Style Gold Tone Layered Necklace Set with Octagonal Pendant",
+    "description": "Beautiful vintage-style gold tone layered necklace set featuring an elegant octagonal pendant. This stunning piece combines classic design elements with contemporary fashion appeal.\n\n**Key Features:**\n• Layered chain design with two complementary chains\n• Eye-catching octagonal pendant with geometric detailing\n• Rich gold tone finish with excellent plating quality\n• Versatile style perfect for both casual and dressy occasions\n• Quality construction with secure clasps\n\n**Specifications:**\n• Material: Gold tone metal (plated base metal)\n• Style: Vintage-inspired contemporary design\n• Condition: Excellent (92/100)\n• Chain Types: Curb chain and rope chain combination\n• Pendant: Octagonal geometric design\n\n**Condition Notes:**\nminimal wear, good plating condition, functional clasps\n\n**Perfect For:**\n• Fashion enthusiasts who love layered jewelry\n• Vintage style collectors\n• Gift giving for special occasions\n• Adding elegance to any outfit\n\nThis piece has been professionally analyzed using advanced AI technology to ensure accurate description and fair pricing. All measurements and condition assessments are based on detailed computer vision analysis.\n\n**Authenticity & Quality:**\nOur AI verification system has confirmed this piece shows consistent quality indicators typical of well-made fashion jewelry. Confidence score: 85%\n\n**Care Instructions:**\n• Store in a cool, dry place\n• Avoid exposure to moisture and chemicals\n• Clean gently with soft cloth\n• Keep chains untangled when storing\n\n**Shipping & Returns:**\n• Fast, secure shipping with tracking\n• 30-day return policy\n• Carefully packaged to prevent damage\n• Same-day handling for orders placed before 2 PM\n\n**Why Choose VintageVault:**\n• AI-powered authentication and analysis\n• Detailed condition reporting\n• Competitive pricing based on market analysis\n• Quality guarantee on all items\n• Expert customer service\n\n*Item analyzed using advanced computer vision technology including YOLO object detection, CLIP visual analysis, and SAM segmentation for the most accurate description possible.*",
+    "price": 28.99,
+    "priceRange": {
+      "min": 22.99,
+      "max": 35.99
+    },
+    "category": "necklace",
+    "subcategory": "layered-set",
+    "tags": [
+      "vintage style",
+      "gold tone",
+      "layered necklace",
+      "fashion jewelry",
+      "costume jewelry",
+      "geometric pendant",
+      "octagonal",
+      "chain necklace",
+      "statement jewelry",
+      "contemporary",
+      "dressy casual",
+      "gift idea"
+    ],
+    "specifications": {
+      "material": "Gold tone metal",
+      "style": "Vintage-inspired contemporary",
+      "type": "Layered necklace set",
+      "pendant": "Octagonal geometric",
+      "chains": "Curb and rope chain combination",
+      "condition": "Excellent (92/100)",
+      "era": "Contemporary",
+      "brand": "Unbranded",
+      "authenticity": "AI Verified"
+    },
+    "seoKeywords": [
+      "vintage style necklace",
+      "gold tone jewelry",
+      "layered chain set",
+      "octagonal pendant",
+      "fashion jewelry",
+      "costume jewelry",
+      "statement necklace",
+      "geometric jewelry",
+      "contemporary vintage",
+      "dressy casual jewelry"
+    ],
+    "marketingPoints": [
+      "AI-Authenticated Quality",
+      "Vintage-Inspired Design",
+      "Versatile Styling Options",
+      "Excellent Condition",
+      "Fast Shipping",
+      "Quality Guarantee"
+    ],
+    "aiMetadata": {
+      "analysisId": "test-jewelry-001",
+      "confidence": 89,
+      "processingTime": 45000,
+      "modelsUsed": [
+        "yolov8n-jewelry-v1.2",
+        "clip-vit-large-patch14",
+        "sam-vit-huge",
+        "gpt-4-vision-preview",
+        "jewelry-expert-v2.1"
+      ],
+      "verificationScore": 85
+    }
+  },
+  "ebayFormat": "=== VINTAGE-STYLE GOLD TONE LAYERED NECKLACE SET WITH OCTAGONAL PENDANT ===\n\n💎 CONDITION: Excellent (92/100)\n🔍 AI VERIFIED: 85% Confidence\n⚡ FAST SHIPPING: Same-day handling\n🛡️ QUALITY GUARANTEE: 30-day returns\n\nBeautiful vintage-style gold tone layered necklace set featuring an elegant octagonal pendant. This stunning piece combines classic design elements with contemporary fashion appeal.\n\n**Key Features:**\n• Layered chain design with two complementary chains\n• Eye-catching octagonal pendant with geometric detailing\n• Rich gold tone finish with excellent plating quality\n• Versatile style perfect for both casual and dressy occasions\n• Quality construction with secure clasps\n\n**Specifications:**\n• Material: Gold tone metal (plated base metal)\n• Style: Vintage-inspired contemporary design\n• Condition: Excellent (92/100)\n• Chain Types: Curb chain and rope chain combination\n• Pendant: Octagonal geometric design\n\n**Condition Notes:**\nminimal wear, good plating condition, functional clasps\n\n**Perfect For:**\n• Fashion enthusiasts who love layered jewelry\n• Vintage style collectors\n• Gift giving for special occasions\n• Adding elegance to any outfit\n\nThis piece has been professionally analyzed using advanced AI technology to ensure accurate description and fair pricing. All measurements and condition assessments are based on detailed computer vision analysis.\n\n**Authenticity & Quality:**\nOur AI verification system has confirmed this piece shows consistent quality indicators typical of well-made fashion jewelry. Confidence score: 85%\n\n**Care Instructions:**\n• Store in a cool, dry place\n• Avoid exposure to moisture and chemicals\n• Clean gently with soft cloth\n• Keep chains untangled when storing\n\n**Shipping & Returns:**\n• Fast, secure shipping with tracking\n• 30-day return policy\n• Carefully packaged to prevent damage\n• Same-day handling for orders placed before 2 PM\n\n**Why Choose VintageVault:**\n• AI-powered authentication and analysis\n• Detailed condition reporting\n• Competitive pricing based on market analysis\n• Quality guarantee on all items\n• Expert customer service\n\n*Item analyzed using advanced computer vision technology including YOLO object detection, CLIP visual analysis, and SAM segmentation for the most accurate description possible.*\n\n📋 ITEM SPECIFICATIONS:\n• Material: Gold tone metal\n• Style: Vintage-inspired contemporary\n• Type: Layered necklace set\n• Pendant: Octagonal geometric\n• Chains: Curb and rope chain combination\n• Condition: Excellent (92/100)\n• Era: Contemporary\n• Brand: Unbranded\n• Authenticity: AI Verified\n\n🏷️ TAGS: vintage style • gold tone • layered necklace • fashion jewelry • costume jewelry • geometric pendant • octagonal • chain necklace • statement jewelry • contemporary • dressy casual • gift idea\n\n💰 PRICE: $28.99\n📊 Market Range: $22.99 - $35.99\n\n🤖 AI ANALYSIS DETAILS:\n• Processing Time: 45s\n• Models Used: 5 AI systems\n• Overall Confidence: 89%\n• Analysis ID: test-jewelry-001\n\n⭐ WHY CHOOSE VINTAGEVAULT:\n✓ AI-Authenticated Quality\n✓ Vintage-Inspired Design\n✓ Versatile Styling Options\n✓ Excellent Condition\n✓ Fast Shipping\n✓ Quality Guarantee\n\n📞 Questions? Message us anytime!\n🚚 Ships within 24 hours!\n💯 100% Satisfaction Guaranteed!\n\n#VintageJewelry #GoldTone #LayeredNecklace #FashionJewelry #AIVerified"
+}
