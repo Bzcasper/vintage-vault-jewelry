@@ -17,7 +17,7 @@ export default {
         "warm-gray": "#8B7355",
         "soft-champagne": "#F7E7CE",
         "rose-gold": "#E8B4B8",
-        
+
         // Shadcn UI Colors
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -52,13 +52,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -92,5 +85,3 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
-

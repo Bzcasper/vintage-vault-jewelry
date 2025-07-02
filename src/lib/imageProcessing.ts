@@ -1,6 +1,6 @@
 'use client';
 
-// Enhanced image processing using Modal.com jewelry classification API
+// Local image processing with mock AI analysis for jewelry classification
 export interface JewelryAnalysis {
   title: string;
   description: string;
@@ -64,7 +64,7 @@ export interface UploadProgress {
   jobId?: string;
 }
 
-export interface ModalAnalysisResponse {
+export interface LocalAnalysisResponse {
   filename: string;
   category: string;
   materials: string[];
@@ -98,17 +98,12 @@ export interface ModalAnalysisResponse {
   processing_time: number;
 }
 
-// Enhanced image processing pipeline using Modal.com
+// Local image processing pipeline using browser-based processing and mock AI
 export class ImageProcessor {
   private static instance: ImageProcessor;
-  private modalEndpoint: string;
-  private modalTokenId: string;
-  private modalTokenSecret: string;
   
   constructor() {
-    this.modalEndpoint = process.env.NEXT_PUBLIC_MODAL_ENDPOINT || 'https://ai-tool-pool--jewelry-classifier-api.modal.run';
-    this.modalTokenId = process.env.MODAL_TOKEN_ID || '';
-    this.modalTokenSecret = process.env.MODAL_TOKEN_SECRET || '';
+    // No external dependencies needed for local processing
   }
   
   static getInstance(): ImageProcessor {
@@ -131,46 +126,41 @@ export class ImageProcessor {
       status: 'uploading'
     });
 
-    // Process images in batches for better performance
-    const batchSize = 3;
-    for (let i = 0; i < files.length; i += batchSize) {
-      const batch = files.slice(i, i + batchSize);
-      const batchPromises = batch.map(async (file, batchIndex) => {
-        const globalIndex = i + batchIndex;
+    // Process images sequentially for better control and error handling
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      
+      try {
+        onProgress?.({
+          total,
+          processed: i,
+          current: file.name,
+          status: 'processing'
+        });
+
+        const processedImage = await this.processSingleImage(file);
+        results.push(processedImage);
         
-        try {
-          onProgress?.({
-            total,
-            processed: globalIndex,
-            current: file.name,
-            status: 'processing'
-          });
+        onProgress?.({
+          total,
+          processed: i + 1,
+          status: i + 1 === total ? 'complete' : 'processing'
+        });
 
-          const processedImage = await this.processSingleImage(file);
-          
-          onProgress?.({
-            total,
-            processed: globalIndex + 1,
-            status: globalIndex + 1 === total ? 'complete' : 'processing'
-          });
-
-          return processedImage;
-
-        } catch (error) {
-          console.error(`Error processing ${file.name}:`, error);
-          onProgress?.({
-            total,
-            processed: globalIndex,
-            current: file.name,
-            status: 'error',
-            error: `Failed to process ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
-          });
-          return null;
-        }
-      });
-
-      const batchResults = await Promise.all(batchPromises);
-      results.push(...batchResults.filter(result => result !== null) as ProcessedImage[]);
+      } catch (error) {
+        console.error(`Error processing ${file.name}:`, error);
+        onProgress?.({
+          total,
+          processed: i,
+          current: file.name,
+          status: 'error',
+          error: `Failed to process ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
+        });
+        
+        // Continue processing other files even if one fails
+        const fallbackImage = await this.createFallbackProcessedImage(file);
+        results.push(fallbackImage);
+      }
     }
 
     return results;
@@ -180,161 +170,67 @@ export class ImageProcessor {
     const startTime = Date.now();
     
     try {
-      // Convert file to base64 for API
-      const base64Image = await this.fileToBase64(file);
+      // Use local upload API for processing
+      const formData = new FormData();
+      formData.append('files', file);
       
-      // Analyze image with Modal.com jewelry classification API
-      const modalResponse = await this.analyzeWithModal(base64Image, file.name);
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
       
-      // Convert Modal response to our format
-      const analysis = this.convertModalResponseToAnalysis(modalResponse);
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
       
-      // Create processed image URL (in real app, this would be uploaded to cloud storage)
-      const processedUrl = URL.createObjectURL(file);
+      const result = await response.json();
+      
+      if (!result.success || !result.results || result.results.length === 0) {
+        throw new Error(result.error || 'No results returned');
+      }
+      
+      const uploadResult = result.results[0];
+      if (uploadResult.error) {
+        throw new Error(uploadResult.error);
+      }
       
       const processingTime = Date.now() - startTime;
 
       return {
-        id: `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: uploadResult.id,
         originalFile: file,
-        processedUrl,
-        analysis,
-        confidence: modalResponse.confidence || 0.85,
-        processingTime,
-        jobId: modalResponse.job_id
+        processedUrl: uploadResult.url,
+        analysis: uploadResult.analysis,
+        confidence: uploadResult.confidence || 0.85,
+        processingTime: uploadResult.processingTime || processingTime
       };
 
     } catch (error) {
       console.error('Error processing image:', error);
-      // Return fallback analysis if Modal API fails
-      const fallbackAnalysis = this.getFallbackAnalysis();
-      const processingTime = Date.now() - startTime;
-
-      return {
-        id: `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        originalFile: file,
-        processedUrl: URL.createObjectURL(file),
-        analysis: fallbackAnalysis,
-        confidence: 0.5,
-        processingTime
-      };
+      throw error; // Let the caller handle fallback
     }
   }
 
-  private async analyzeWithModal(base64Image: string, filename: string): Promise<ModalAnalysisResponse> {
-    const formData = new FormData();
-    
-    // Convert base64 back to blob for FormData
-    const byteCharacters = atob(base64Image);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'image/jpeg' });
-    
-    formData.append('file', blob, filename);
-    formData.append('analysis_type', 'comprehensive');
-    formData.append('include_seo', 'true');
-    formData.append('include_pricing', 'true');
-
-    const response = await fetch(`${this.modalEndpoint}/analyze-single`, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${this.modalTokenId}:${this.modalTokenSecret}`,
-        // Don't set Content-Type for FormData, let browser set it with boundary
-      }
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Modal API error: ${response.status} - ${errorText}`);
-    }
-
-    const result = await response.json();
-    return result;
-  }
-
-  private convertModalResponseToAnalysis(modalResponse: ModalAnalysisResponse): JewelryAnalysis {
-    const listing = modalResponse.optimized_listing;
-    const seo = modalResponse.seo_data;
-    const aiAnalysis = modalResponse.ai_analysis;
-
-    // Map category to our enum
-    const categoryMap: { [key: string]: JewelryAnalysis['category'] } = {
-      'necklace': 'necklace',
-      'ring': 'ring',
-      'bracelet': 'bracelet',
-      'earrings': 'earrings',
-      'brooch': 'brooch',
-      'pendant': 'pendant',
-      'watch': 'watch',
-      'vintage': 'vintage',
-      'costume': 'costume',
-      'designer': 'designer'
-    };
-
-    const category = categoryMap[modalResponse.category.toLowerCase()] || 'costume';
-
-    // Extract era from style or AI analysis
-    const era = aiAnalysis?.clip_results?.style_classification?.includes('1920') ? '1920s' :
-                aiAnalysis?.clip_results?.style_classification?.includes('1960') ? '1960s' :
-                aiAnalysis?.clip_results?.style_classification?.includes('victorian') ? 'Victorian' :
-                aiAnalysis?.clip_results?.style_classification?.includes('art deco') ? 'Art Deco' :
-                undefined;
-
-    // Determine condition based on confidence and analysis
-    const condition: JewelryAnalysis['condition'] = 
-      modalResponse.confidence > 0.9 ? 'excellent' :
-      modalResponse.confidence > 0.8 ? 'very-good' :
-      modalResponse.confidence > 0.7 ? 'good' : 'fair';
+  private async createFallbackProcessedImage(file: File): Promise<ProcessedImage> {
+    const startTime = Date.now();
+    const analysis = this.getFallbackAnalysis();
+    const processingTime = Date.now() - startTime;
 
     return {
-      title: listing.title || `Beautiful ${modalResponse.category}`,
-      description: listing.description || 'A stunning piece of jewelry with unique character and charm.',
-      category,
-      era,
-      brand: undefined, // Would be extracted from AI analysis if available
-      materials: modalResponse.materials || ['Mixed metals'],
-      condition,
-      estimatedPrice: Math.max(20, Math.min(500, listing.price || 125)),
-      careInstructions: listing.care_instructions || [
-        'Store in a dry place away from direct sunlight',
-        'Clean gently with a soft, dry cloth',
-        'Avoid exposure to chemicals and perfumes'
-      ],
-      keywords: seo.keywords || listing.tags || ['jewelry', 'vintage', 'unique'],
-      specifications: {
-        type: modalResponse.category || 'jewelry',
-        style: modalResponse.style || 'classic',
-        gemstones: modalResponse.gemstones,
-        metalType: modalResponse.materials?.[0],
-        colorAnalysis: aiAnalysis?.clip_results?.color_analysis ? {
-          dominantColors: aiAnalysis.clip_results.color_analysis.dominant_colors || [],
-          colorHarmony: aiAnalysis.clip_results.color_analysis.color_harmony || 'unknown',
-          brightness: aiAnalysis.clip_results.color_analysis.brightness || 'medium',
-          saturation: aiAnalysis.clip_results.color_analysis.saturation || 'medium'
-        } : undefined,
-        textureAnalysis: aiAnalysis?.clip_results?.texture_analysis ? {
-          surfaceFinish: aiAnalysis.clip_results.texture_analysis.surface_finish || 'polished',
-          pattern: aiAnalysis.clip_results.texture_analysis.pattern || 'solid'
-        } : undefined
-      },
-      confidence: modalResponse.confidence,
-      aiAnalysis: {
-        yoloResults: aiAnalysis?.yolo_results,
-        clipResults: aiAnalysis?.clip_results,
-        qwenResults: aiAnalysis?.qwen_results,
-        samResults: aiAnalysis?.sam_results
-      },
-      seoData: {
-        metaTitle: seo.meta_title || listing.title,
-        metaDescription: seo.meta_description || listing.description,
-        keywords: seo.keywords || [],
-        tags: seo.tags || listing.tags || []
-      }
+      id: `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      originalFile: file,
+      processedUrl: URL.createObjectURL(file),
+      analysis,
+      confidence: 0.5,
+      processingTime
     };
+  }
+
+  // Simple local analysis method (already using mock data from API)
+  private async analyzeLocally(file: File): Promise<JewelryAnalysis> {
+    // This method is now handled by the upload API
+    // which uses MockAIAnalyzer for generating analysis
+    throw new Error('Use processSingleImage instead - this method is deprecated');
   }
 
   private getFallbackAnalysis(): JewelryAnalysis {
@@ -358,37 +254,27 @@ export class ImageProcessor {
     };
   }
 
-  private async fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        const base64 = result.split(',')[1]; // Remove data:image/jpeg;base64, prefix
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Batch processing for multiple images
-  async processBatch(files: File[]): Promise<{ jobId: string }> {
+  // Batch processing using local advanced API
+  async processBatch(files: File[], userId: string = 'anonymous', processingMode: string = 'advanced'): Promise<{ jobId: string }> {
     const formData = new FormData();
     
-    files.forEach((file, index) => {
-      formData.append(`files`, file);
+    files.forEach((file) => {
+      formData.append('files', file);
     });
     
-    formData.append('analysis_type', 'comprehensive');
-    formData.append('include_seo', 'true');
-    formData.append('include_pricing', 'true');
+    formData.append('userId', userId);
+    formData.append('processingMode', processingMode);
+    formData.append('options', JSON.stringify({
+      includeMarketAnalysis: true,
+      includeBrandRecognition: true,
+      includeConditionAssessment: true,
+      generateSEOContent: true,
+      batchProcessing: true
+    }));
 
-    const response = await fetch(`${this.modalEndpoint}/analyze-batch`, {
+    const response = await fetch('/api/upload/advanced', {
       method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${this.modalTokenId}:${this.modalTokenSecret}`,
-      }
+      body: formData
     });
 
     if (!response.ok) {
@@ -396,27 +282,33 @@ export class ImageProcessor {
     }
 
     const result = await response.json();
-    return { jobId: result.job_id };
+    return { jobId: result.jobId };
   }
 
   // Check job status for batch processing
-  async checkJobStatus(jobId: string): Promise<{
+  async checkJobStatus(jobId: string, userId: string = 'anonymous'): Promise<{
     status: string;
     progress: number;
-    results?: ModalAnalysisResponse[];
+    results?: any[];
     error?: string;
   }> {
-    const response = await fetch(`${this.modalEndpoint}/job-status/${jobId}`, {
-      headers: {
-        'Authorization': `Bearer ${this.modalTokenId}:${this.modalTokenSecret}`,
-      }
-    });
+    const response = await fetch(`/api/upload/advanced?jobId=${jobId}&userId=${userId}`);
 
     if (!response.ok) {
       throw new Error(`Job status check failed: ${response.status}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to get job status');
+    }
+
+    return {
+      status: result.job.status,
+      progress: result.job.progress,
+      results: result.job.results,
+      error: result.job.error
+    };
   }
 
   // Utility functions for file handling

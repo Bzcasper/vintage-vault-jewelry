@@ -7,17 +7,14 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = { fs: false, net: false, tls: false };
-    }
-    return config;
-  },
+  // Turbopack handles Node.js polyfills automatically
+  // No need for manual resolve.fallback configuration
   transpilePackages: ["lucide-react"],
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     MODAL_TOKEN_ID: process.env.MODAL_TOKEN_ID,
     MODAL_TOKEN_SECRET: process.env.MODAL_TOKEN_SECRET,
@@ -35,5 +32,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-
-

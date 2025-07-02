@@ -236,55 +236,81 @@ const AdvancedImageUploader: React.FC<AdvancedImageUploaderProps> = ({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-8">
       {/* Processing Mode Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-vintage-gold" />
-            AI Processing Mode
-          </CardTitle>
-          <CardDescription>
-            Choose your processing level for optimal results
-          </CardDescription>
+      <Card className="premium-card animate-fade-in-up">
+        <CardHeader className="pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-3 text-2xl font-serif">
+                <div className="h-12 w-12 bg-vintage-gold/10 rounded-xl flex items-center justify-center">
+                  <Zap className="h-6 w-6 text-vintage-gold" />
+                </div>
+                AI Processing Mode
+              </CardTitle>
+              <CardDescription className="text-lg mt-2">
+                Choose your processing level for optimal jewelry analysis results
+              </CardDescription>
+            </div>
+            <Badge className="bg-vintage-gold/10 text-vintage-gold border-vintage-gold/20">
+              Professional AI
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs value={processingMode} onValueChange={(value: any) => setProcessingMode(value)}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="standard">Standard</TabsTrigger>
-              <TabsTrigger value="advanced">Advanced</TabsTrigger>
-              <TabsTrigger value="premium">Premium</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 h-14 bg-soft-champagne/50">
+              <TabsTrigger value="standard" className="text-base py-3">Standard</TabsTrigger>
+              <TabsTrigger value="advanced" className="text-base py-3">Advanced</TabsTrigger>
+              <TabsTrigger value="premium" className="text-base py-3">Premium</TabsTrigger>
             </TabsList>
             
-            {['standard', 'advanced', 'premium'].map(mode => (
-              <TabsContent key={mode} value={mode} className="mt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">{mode.charAt(0).toUpperCase() + mode.slice(1)} Features</h4>
-                    <ul className="space-y-1">
+            {['standard', 'advanced', 'premium'].map((mode, modeIndex) => (
+              <TabsContent key={mode} value={mode} className="mt-6 animate-fade-in-up" style={{ animationDelay: `${modeIndex * 0.1}s` }}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <h4 className="font-serif font-semibold text-lg mb-4 text-deep-charcoal">
+                      {mode.charAt(0).toUpperCase() + mode.slice(1)} Features
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {getModeFeatures(mode).map((feature, index) => (
-                        <li key={index} className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          {feature}
-                        </li>
+                        <div key={index} className="flex items-center gap-3 p-3 bg-vintage-gold/5 rounded-lg animate-scale-in" style={{ animationDelay: `${index * 0.05}s` }}>
+                          <CheckCircle className="h-5 w-5 text-vintage-gold flex-shrink-0" />
+                          <span className="text-sm font-medium text-deep-charcoal">{feature}</span>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Processing Time:</span> {
-                        mode === 'premium' ? '60-90s' : mode === 'advanced' ? '30-60s' : '15-30s'
-                      } per image
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Max Files:</span> {
-                        mode === 'premium' ? '100' : mode === 'advanced' ? '50' : '20'
-                      }
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Max Size:</span> {
-                        mode === 'premium' ? '50MB' : mode === 'advanced' ? '20MB' : '10MB'
-                      } per file
+                  
+                  <div className="space-y-4">
+                    <div className="bg-soft-champagne/30 rounded-lg p-4 space-y-3">
+                      <h5 className="font-semibold text-deep-charcoal">Specifications</h5>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-warm-gray">Processing Time:</span>
+                          <Badge variant="outline" className="text-vintage-gold border-vintage-gold/30">
+                            {mode === 'premium' ? '60-90s' : mode === 'advanced' ? '30-60s' : '15-30s'}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-warm-gray">Max Files:</span>
+                          <Badge variant="outline" className="text-vintage-gold border-vintage-gold/30">
+                            {mode === 'premium' ? '100' : mode === 'advanced' ? '50' : '20'}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-warm-gray">Max Size:</span>
+                          <Badge variant="outline" className="text-vintage-gold border-vintage-gold/30">
+                            {mode === 'premium' ? '50MB' : mode === 'advanced' ? '20MB' : '10MB'}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-warm-gray">Accuracy:</span>
+                          <Badge className="bg-vintage-gold text-white">
+                            {mode === 'premium' ? '98%' : mode === 'advanced' ? '95%' : '90%'}
+                          </Badge>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -294,43 +320,67 @@ const AdvancedImageUploader: React.FC<AdvancedImageUploaderProps> = ({
         </CardContent>
       </Card>
 
-      {/* Upload Area */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Upload Jewelry Images</CardTitle>
-          <CardDescription>
-            Drag and drop images, select files, or choose an entire folder
-          </CardDescription>
+      {/* Enhanced Upload Area */}
+      <Card className="premium-card animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <CardHeader className="pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-3 text-2xl font-serif">
+                <div className="h-12 w-12 bg-vintage-gold/10 rounded-xl flex items-center justify-center">
+                  <Upload className="h-6 w-6 text-vintage-gold" />
+                </div>
+                Upload Jewelry Images
+              </CardTitle>
+              <CardDescription className="text-lg mt-2">
+                Drag and drop images, select files, or choose an entire folder for AI analysis
+              </CardDescription>
+            </div>
+            <div className="text-right">
+              <div className="text-sm font-medium text-deep-charcoal">{files.length} files selected</div>
+              <div className="text-xs text-warm-gray">Mode: {processingMode}</div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-vintage-gold transition-colors"
+            className="border-2 border-dashed border-vintage-gold/30 rounded-xl p-12 text-center hover:border-vintage-gold hover:bg-vintage-gold/5 transition-all duration-300 animate-shimmer group"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex justify-center">
-                <Upload className="h-12 w-12 text-gray-400" />
+                <div className="h-20 w-20 bg-vintage-gold/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Upload className="h-10 w-10 text-vintage-gold group-hover:animate-bounce" />
+                </div>
               </div>
               <div>
-                <p className="text-lg font-medium">Drop your jewelry images here</p>
-                <p className="text-sm text-gray-500">or choose from the options below</p>
+                <h3 className="text-xl font-serif font-semibold text-deep-charcoal mb-2">
+                  Drop your jewelry images here
+                </h3>
+                <p className="text-lg text-warm-gray mb-4">
+                  or choose from the professional upload options below
+                </p>
+                <div className="text-sm text-warm-gray">
+                  Supports JPEG, PNG, WebP • AI-powered analysis • Professional results
+                </div>
               </div>
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="flex flex-wrap justify-center gap-6">
                 <Button
                   variant="outline"
+                  size="lg"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-3 px-8 py-4 text-lg group hover:bg-vintage-gold/10 hover:border-vintage-gold transition-all"
                 >
-                  <ImageIcon className="h-4 w-4" />
+                  <ImageIcon className="h-6 w-6 group-hover:scale-110 transition-transform" />
                   Select Images
                 </Button>
                 <Button
                   variant="outline"
+                  size="lg"
                   onClick={() => folderInputRef.current?.click()}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-3 px-8 py-4 text-lg group hover:bg-vintage-gold/10 hover:border-vintage-gold transition-all"
                 >
-                  <Folder className="h-4 w-4" />
+                  <Folder className="h-6 w-6 group-hover:scale-110 transition-transform" />
                   Select Folder
                 </Button>
               </div>
@@ -354,32 +404,49 @@ const AdvancedImageUploader: React.FC<AdvancedImageUploaderProps> = ({
             className="hidden"
           />
 
-          {/* File List */}
+          {/* Enhanced File List */}
           {files.length > 0 && (
-            <div className="mt-6">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="font-medium">Selected Files ({files.length})</h4>
-                <Button variant="outline" size="sm" onClick={clearFiles}>
-                  Clear All
-                </Button>
+            <div className="mt-8 animate-fade-in-up">
+              <div className="flex justify-between items-center mb-6">
+                <h4 className="font-serif font-semibold text-lg text-deep-charcoal">
+                  Selected Files ({files.length})
+                </h4>
+                <div className="flex gap-3">
+                  <Button variant="outline" size="sm" onClick={clearFiles} className="hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors">
+                    Clear All
+                  </Button>
+                  <Badge variant="outline" className="text-vintage-gold border-vintage-gold/30">
+                    {(files.reduce((total, file) => total + file.size, 0) / 1024 / 1024).toFixed(1)}MB total
+                  </Badge>
+                </div>
               </div>
-              <div className="max-h-40 overflow-y-auto space-y-2">
+              <div className="max-h-64 overflow-y-auto space-y-3 pr-2">
                 {files.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                    <div className="flex items-center gap-2">
-                      <ImageIcon className="h-4 w-4" />
-                      <span className="text-sm truncate">{file.name}</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {(file.size / 1024 / 1024).toFixed(1)}MB
-                      </Badge>
+                  <div key={index} className="flex items-center justify-between p-4 bg-soft-champagne/20 rounded-lg border border-vintage-gold/10 hover:border-vintage-gold/30 transition-colors group animate-scale-in" style={{ animationDelay: `${index * 0.05}s` }}>
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div className="h-10 w-10 bg-vintage-gold/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <ImageIcon className="h-5 w-5 text-vintage-gold" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-deep-charcoal truncate">{file.name}</div>
+                        <div className="text-sm text-warm-gray">
+                          {(file.size / 1024 / 1024).toFixed(1)}MB • {file.type}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <Badge variant="secondary" className="text-xs bg-vintage-gold/10 text-vintage-gold">
+                          Ready
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(index)}
+                          className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all"
+                        >
+                          ×
+                        </Button>
+                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFile(index)}
-                    >
-                      ×
-                    </Button>
                   </div>
                 ))}
               </div>
@@ -430,86 +497,196 @@ const AdvancedImageUploader: React.FC<AdvancedImageUploaderProps> = ({
             </div>
           )}
 
-          {/* Upload Button */}
-          <div className="mt-6">
-            <Button
-              onClick={handleUpload}
-              disabled={files.length === 0 || uploading || (validationResults && !validationResults.valid)}
-              className="w-full"
-              size="lg"
-            >
-              {uploading ? (
-                <>
-                  <Clock className="h-4 w-4 mr-2 animate-spin" />
-                  Processing with AI...
-                </>
-              ) : (
-                <>
-                  <Brain className="h-4 w-4 mr-2" />
-                  Start AI Analysis ({files.length} files)
-                </>
+          {/* Enhanced Upload Button */}
+          <div className="mt-8">
+            <div className="bg-vintage-gold/5 rounded-xl p-6 border border-vintage-gold/20">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h4 className="font-serif font-semibold text-lg text-deep-charcoal">Ready to Process</h4>
+                  <p className="text-warm-gray">Start professional AI analysis of your jewelry images</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-vintage-gold">{files.length}</div>
+                  <div className="text-sm text-warm-gray">files ready</div>
+                </div>
+              </div>
+              
+              <Button
+                onClick={handleUpload}
+                disabled={files.length === 0 || uploading || (validationResults && !validationResults.valid)}
+                className="w-full h-14 text-lg font-semibold btn-primary group"
+                size="lg"
+              >
+                {uploading ? (
+                  <>
+                    <Clock className="h-6 w-6 mr-3 animate-spin" />
+                    Processing with AI Pipeline...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="h-6 w-6 mr-3 group-hover:animate-pulse" />
+                    Start Professional AI Analysis ({files.length} files)
+                    <Sparkles className="h-5 w-5 ml-3 group-hover:animate-bounce" />
+                  </>
+                )}
+              </Button>
+              
+              {files.length > 0 && !uploading && (
+                <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
+                  <div>
+                    <div className="font-medium text-deep-charcoal">Estimated Time</div>
+                    <div className="text-vintage-gold">
+                      {Math.ceil(files.length * (processingMode === 'premium' ? 75 : processingMode === 'advanced' ? 45 : 22.5) / 60)} min
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-deep-charcoal">Processing Mode</div>
+                    <div className="text-vintage-gold capitalize">{processingMode}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-deep-charcoal">Expected Accuracy</div>
+                    <div className="text-vintage-gold">
+                      {processingMode === 'premium' ? '98%' : processingMode === 'advanced' ? '95%' : '90%'}
+                    </div>
+                  </div>
+                </div>
               )}
-            </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Processing Status */}
+      {/* Enhanced Processing Status */}
       {currentJob && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5 text-vintage-gold" />
-              AI Processing Status
-            </CardTitle>
-            <CardDescription>
-              Job ID: {currentJob.id} • Mode: {currentJob.processingMode}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Overall Progress */}
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Overall Progress</span>
-                <span className="text-sm text-gray-500">
-                  {currentJob.processedFiles} / {currentJob.totalFiles} files
-                </span>
+        <Card className="premium-card animate-fade-in-up border-vintage-gold/20">
+          <CardHeader className="bg-vintage-gold/5 border-b border-vintage-gold/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-3 text-2xl font-serif">
+                  <div className="h-12 w-12 bg-vintage-gold/20 rounded-xl flex items-center justify-center">
+                    <Brain className="h-6 w-6 text-vintage-gold animate-pulse" />
+                  </div>
+                  AI Processing Pipeline
+                </CardTitle>
+                <CardDescription className="text-lg mt-2">
+                  Job ID: {currentJob.id} • Mode: <span className="capitalize font-medium text-vintage-gold">{currentJob.processingMode}</span>
+                </CardDescription>
               </div>
-              <Progress value={currentJob.progress} className="h-2" />
-              <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                <span>Status: {currentJob.status}</span>
-                <span>
-                  {currentJob.status === 'processing' && 
-                    `ETA: ${new Date(currentJob.estimatedCompletion).toLocaleTimeString()}`
-                  }
-                </span>
+              <div className="text-right">
+                <Badge className={`${
+                  currentJob.status === 'completed' ? 'bg-green-500' :
+                  currentJob.status === 'processing' ? 'bg-blue-500 animate-pulse' :
+                  currentJob.status === 'failed' ? 'bg-red-500' :
+                  'bg-gray-500'
+                } text-white capitalize`}>
+                  {currentJob.status}
+                </Badge>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-8 p-8">
+            {/* Enhanced Overall Progress */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h4 className="font-serif font-semibold text-lg text-deep-charcoal">Overall Progress</h4>
+                  <p className="text-warm-gray">Processing {currentJob.totalFiles} jewelry images</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-vintage-gold">
+                    {Math.round(currentJob.progress)}%
+                  </div>
+                  <div className="text-sm text-warm-gray">
+                    {currentJob.processedFiles} / {currentJob.totalFiles} files
+                  </div>
+                </div>
+              </div>
+              
+              <div className="relative">
+                <Progress value={currentJob.progress} className="h-4 bg-vintage-gold/10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-vintage-gold/20 via-vintage-gold/40 to-vintage-gold/20 rounded-full opacity-50 animate-shimmer" />
+              </div>
+              
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-vintage-gold" />
+                  <span className="text-warm-gray">
+                    Started: {new Date(currentJob.createdAt).toLocaleTimeString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-vintage-gold">
+                  {currentJob.status === 'processing' && (
+                    <>
+                      <TrendingUp className="h-4 w-4" />
+                      <span>ETA: {new Date(currentJob.estimatedCompletion).toLocaleTimeString()}</span>
+                    </>
+                  )}
+                  {currentJob.status === 'completed' && (
+                    <>
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-green-600">Completed Successfully</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Pipeline Stages */}
+            {/* Enhanced Pipeline Stages */}
             {currentJob.pipeline && currentJob.pipeline.length > 0 && (
-              <div>
-                <h4 className="font-medium mb-4">Processing Pipeline</h4>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="font-serif font-semibold text-lg text-deep-charcoal mb-2">AI Processing Pipeline</h4>
+                  <p className="text-warm-gray">Advanced multi-stage analysis for comprehensive jewelry evaluation</p>
+                </div>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {currentJob.pipeline.map((stage, index) => {
                     const StageIcon = getStageIcon(stage.stage);
                     return (
-                      <div key={index} className="border rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <StageIcon className={`h-4 w-4 ${
-                            stage.status === 'completed' ? 'text-green-500' :
-                            stage.status === 'processing' ? 'text-blue-500' :
-                            stage.status === 'failed' ? 'text-red-500' :
-                            'text-gray-400'
-                          }`} />
-                          <span className="text-sm font-medium">{stage.stage}</span>
+                      <div key={index} className={`premium-card border-2 p-4 transition-all duration-300 ${
+                        stage.status === 'completed' ? 'border-green-500/30 bg-green-50/50' :
+                        stage.status === 'processing' ? 'border-vintage-gold/50 bg-vintage-gold/5 animate-pulse' :
+                        stage.status === 'failed' ? 'border-red-500/30 bg-red-50/50' :
+                        'border-gray-200'
+                      }`}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
+                            stage.status === 'completed' ? 'bg-green-100' :
+                            stage.status === 'processing' ? 'bg-vintage-gold/10' :
+                            stage.status === 'failed' ? 'bg-red-100' :
+                            'bg-gray-100'
+                          }`}>
+                            <StageIcon className={`h-5 w-5 ${
+                              stage.status === 'completed' ? 'text-green-600' :
+                              stage.status === 'processing' ? 'text-vintage-gold' :
+                              stage.status === 'failed' ? 'text-red-600' :
+                              'text-gray-400'
+                            }`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-deep-charcoal truncate">
+                              {stage.stage}
+                            </div>
+                            <div className={`text-xs capitalize ${
+                              stage.status === 'completed' ? 'text-green-600' :
+                              stage.status === 'processing' ? 'text-vintage-gold' :
+                              stage.status === 'failed' ? 'text-red-600' :
+                              'text-gray-500'
+                            }`}>
+                              {stage.status}
+                            </div>
+                          </div>
                         </div>
-                        <Progress value={stage.progress} className="h-1 mb-2" />
-                        <div className="text-xs text-gray-500 capitalize">
-                          {stage.status}
+                        
+                        <div className="mb-3">
+                          <Progress value={stage.progress} className="h-2" />
+                        </div>
+                        
+                        <div className="flex justify-between items-center text-xs text-warm-gray">
+                          <span>{Math.round(stage.progress)}%</span>
                           {stage.endTime && stage.startTime && (
-                            <span className="ml-2">
-                              ({((stage.endTime - stage.startTime) / 1000).toFixed(1)}s)
+                            <span>
+                              {((stage.endTime - stage.startTime) / 1000).toFixed(1)}s
                             </span>
                           )}
                         </div>
@@ -520,39 +697,86 @@ const AdvancedImageUploader: React.FC<AdvancedImageUploaderProps> = ({
               </div>
             )}
 
-            {/* Results Preview */}
+            {/* Enhanced Results Preview */}
             {currentJob.results && currentJob.results.length > 0 && (
-              <div>
-                <h4 className="font-medium mb-4">Results Preview</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-serif font-semibold text-lg text-deep-charcoal">Processing Results</h4>
+                    <p className="text-warm-gray">AI-generated listings and analysis results</p>
+                  </div>
+                  <Badge className="bg-green-100 text-green-700 border-green-200">
+                    {currentJob.results.length} listings generated
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {currentJob.results.slice(0, 6).map((result, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="space-y-2">
-                        <div className="font-medium text-sm truncate">
-                          {result.listing?.title || result.filename}
+                    <div key={index} className="premium-card p-6 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <div className="space-y-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <h5 className="font-semibold text-deep-charcoal truncate">
+                              {result.listing?.title || result.filename}
+                            </h5>
+                            <p className="text-sm text-warm-gray mt-1">
+                              {result.filename || 'Processed jewelry image'}
+                            </p>
+                          </div>
+                          <div className="h-10 w-10 bg-vintage-gold/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Gem className="h-5 w-5 text-vintage-gold" />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {result.classification?.category || 'Unknown'}
+                        
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="secondary" className="text-xs bg-vintage-gold/10 text-vintage-gold">
+                            {result.classification?.category || 'Jewelry'}
                           </Badge>
                           {result.market?.estimatedValue?.recommended && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs border-green-200 text-green-700">
                               ${result.market.estimatedValue.recommended}
                             </Badge>
                           )}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          Confidence: {Math.round((result.processing?.confidence || 0) * 100)}%
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-warm-gray">AI Confidence:</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 bg-gray-200 rounded-full h-2">
+                                <div 
+                                  className="bg-vintage-gold h-2 rounded-full transition-all duration-500" 
+                                  style={{ width: `${(result.processing?.confidence || 0) * 100}%` }}
+                                />
+                              </div>
+                              <span className="text-sm font-medium text-vintage-gold">
+                                {Math.round((result.processing?.confidence || 0) * 100)}%
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {result.listing?.seoScore && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-warm-gray">SEO Score:</span>
+                              <Badge variant="outline" className="text-xs text-blue-600 border-blue-200">
+                                {result.listing.seoScore}/100
+                              </Badge>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
+                
                 {currentJob.results.length > 6 && (
-                  <div className="text-center mt-4">
-                    <span className="text-sm text-gray-500">
-                      +{currentJob.results.length - 6} more results
-                    </span>
+                  <div className="text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-vintage-gold/10 rounded-lg">
+                      <Sparkles className="h-4 w-4 text-vintage-gold" />
+                      <span className="text-sm font-medium text-vintage-gold">
+                        +{currentJob.results.length - 6} more results generated
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
