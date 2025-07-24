@@ -67,10 +67,11 @@
     color: hsl(var(--foreground));
     font-family: 'Inter', sans-serif;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1 {
+    @apply text-4xl font-serif mb-4;
+  }
+  h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.5rem; /* Default font size for h1 */
-    margin-bottom: 1rem; /* Default margin for h1 */
   }
 }
 
